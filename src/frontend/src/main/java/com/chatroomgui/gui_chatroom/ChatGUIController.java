@@ -8,18 +8,13 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
-public class ChatGUIController {
-
-    public static Scene getChatroom() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginApplication.class.getResource("chat-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-
-        return scene;
-    }
+public class ChatGUIController 
+{
 
     @FXML
-    public void onSendButtonClick() {
-
+    public void onSendButtonClick() 
+    {
+        
     }
 
     @FXML

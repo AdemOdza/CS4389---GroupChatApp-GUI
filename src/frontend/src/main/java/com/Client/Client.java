@@ -1,10 +1,14 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+package com.Client;
+
+import com.AES.AES;
+import com.RSA.RSAUtil;
+import com.AES.AESUtil;
+
+import javax.crypto.SecretKey;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Base64;
 import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,8 +17,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+//UI
+import com.chatroomgui.gui_chatroom.GUIResources;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class Client {
+
+
+public class Client extends Application{
 
 	private Socket socket;
 	private BufferedReader bufferedReader;
@@ -26,8 +37,8 @@ public class Client {
 	static String databaseName = "login";
 	static String url = "jdbc:mysql://localhost:3306/" + databaseName;
 	
-	static String username = "root";
-	static String password = "Friday123!";
+	static String dbUsername = "root";
+	static String dbPassword = "Friday123!";
 	
 	
 	public Client(Socket socket, String clientName) {
@@ -64,13 +75,36 @@ public class Client {
 			@Override
 			public void run() {
 				String msgFromGroupChat;
-				
+
 				while(socket.isConnected()) {
 					try {
 						msgFromGroupChat = bufferedReader.readLine();
-						System.out.println(msgFromGroupChat);
+
+						String[] parts = msgFromGroupChat.split("--");
+
+						String privateKey = parts[0];
+						String encryptedAESKey = parts[1];
+						String encryptedMessage = parts[2];
+
+						//Decrypt the AES key encrypted with the client's public key using the client's private key
+						String decryptedAesKey = RSAUtil.decrypt(encryptedAESKey, privateKey);
+
+						//get the AES key
+						SecretKey aesKey = AESUtil.convertStringToSecretKeyto(decryptedAesKey);
+
+						//Decrypt the encrypted message using the decrypted AES key
+						String decryptedMessage = AES.decrypt(encryptedMessage, aesKey);
+
+
+						//String decryptedMessage = RSAUtil.decrypt(encryptedMessage, privateKey);
+
+						//display the message
+						System.out.println(decryptedMessage);
+
 					} catch (IOException e) {
 						closeEverything(socket, bufferedReader, bufferedWriter);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -79,7 +113,7 @@ public class Client {
 	
 	
 	public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
-		try {
+		try{
 			if (bufferedReader != null) {
 				bufferedReader.close();
 			}
@@ -121,9 +155,16 @@ public class Client {
 		return success;
 	}
 	
+	@Override
+	public void start(Stage stage) throws IOException {
+		GUIResources.setLoginScene(stage);
+	}
+
 	public static void main(String[] args) throws UnknownHostException, IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException  {
+		launch();
+
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		try (Connection connection = DriverManager.getConnection(url, username, password);) {
+		try (Connection connection = DriverManager.getConnection(url, dbUsername, dbPassword);) {
 		 	System.out.println("Database Connected!");
 		 	
 		 	Scanner scanner = new Scanner(System.in);

@@ -7,12 +7,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class LoginApplication extends Application
+
+
+public class LoginApplicationzzzz extends Application
 {
     @Override
     public void start(Stage stage) throws IOException 
     {
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginApplication.class.getResource("login-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(LoginApplicationzzzz.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setAlwaysOnTop(true);
         stage.setTitle("Login");
@@ -20,7 +22,9 @@ public class LoginApplication extends Application
         stage.show();
     }
 
+
     public static void main(String[] args) {
         launch();
+        
     }
 }

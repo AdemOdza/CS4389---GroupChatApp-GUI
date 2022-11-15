@@ -1,4 +1,4 @@
-package soketGroupChat;
+package com.soketGroupChat;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
