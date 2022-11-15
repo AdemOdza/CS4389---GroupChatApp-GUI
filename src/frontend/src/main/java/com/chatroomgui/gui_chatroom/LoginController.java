@@ -1,18 +1,16 @@
 package com.chatroomgui.gui_chatroom;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
 
-public class HelloController {
+public class LoginController {
     @FXML private Label welcomeText;
     @FXML private TextField passwordTextField;
     @FXML private TextField usernameTextField;
     
     @FXML
-    protected void onHelloButtonClick() 
+    protected void onLoginButtonClick()
     {
         String password = passwordTextField.getText();
         String username = usernameTextField.getText();
@@ -22,7 +20,7 @@ public class HelloController {
         }
         else
         {
-            welcomeText.setText("You're good to go");
+            welcomeText.setText("Successful Login");
         }
     }
 }
